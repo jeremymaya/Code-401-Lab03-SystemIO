@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace SystemIO
 {
@@ -23,13 +24,17 @@ namespace SystemIO
             Console.WriteLine("5. Exit");
             Console.Write("Choose an option: ");
 
+            string path = "../../../words.txt";
+            
             switch (Console.ReadLine())
             {
                 case "1":
                     ViewWords();
                     return true;
                 case "2":
-                    AddWord();
+                    Console.WriteLine("Type a word to add to the list");
+                    string[] word = { Console.ReadLine() };
+                    AddWord(path, word);
                     return true;
                 case "3":
                     RemoveWords();
@@ -55,9 +60,9 @@ namespace SystemIO
 
         }
         //Add a new word to the list
-        static void AddWord()
+        static void AddWord(string path, string[] word)
         {
-
+            File.AppendAllLines(path, word);
         }
         //End the game
         static void ExitGame()
