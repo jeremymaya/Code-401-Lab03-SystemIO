@@ -29,7 +29,8 @@ namespace SystemIO
             switch (Console.ReadLine())
             {
                 case "1":
-                    ViewWords();
+                    string[] words = File.ReadAllLines(path);
+                    ViewWords(words);
                     return true;
                 case "2":
                     Console.WriteLine("Type a word to add to the list");
@@ -51,8 +52,12 @@ namespace SystemIO
 
         }
         //Reads the words in from the external file and outputs them to the console
-        static void ViewWords()
+        static void ViewWords(string[] words)
         {
+            foreach (string word in words)
+            {
+                Console.WriteLine(word);
+            }
         }
         //Gives the user the ability to remove one of the words in the list
         static void RemoveWords()
