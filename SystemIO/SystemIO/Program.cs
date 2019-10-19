@@ -15,7 +15,7 @@ namespace SystemIO
         }
 
         //Asks the user what action they should take
-        static bool UserInterface()
+        public static bool UserInterface()
         {
             Console.WriteLine("1. View All words in the list");
             Console.WriteLine("2. Add a word");
@@ -29,16 +29,17 @@ namespace SystemIO
             switch (Console.ReadLine())
             {
                 case "1":
-                    string[] words = File.ReadAllLines(path);
-                    ViewWords(words);
+                    Console.WriteLine(ViewWords(path));
                     return true;
                 case "2":
                     Console.WriteLine("Type a word to add to the list");
-                    string[] word = { Console.ReadLine() };
+                    string word = Console.ReadLine();
                     AddWord(path, word);
                     return true;
                 case "3":
-                    RemoveWords();
+                    Console.WriteLine("Type a word to remove from the list");
+                    string remove = Console.ReadLine();
+                    RemoveWord(path, remove);
                     return true;
                 case "4":
                     return true;
@@ -52,31 +53,64 @@ namespace SystemIO
 
         }
         //Reads the words in from the external file and outputs them to the console
-        static void ViewWords(string[] words)
+        public static string ViewWords(string path)
         {
-            foreach (string word in words)
-            {
-                Console.WriteLine(word);
-            }
+            string allWords = File.ReadAllText(path);
+            return allWords;
         }
+
         //Gives the user the ability to remove one of the words in the list
-        static void RemoveWords()
+        public static void RemoveWord(string path, string remove)
         {
+            string[] lines = File.ReadAllLines(path);
+            string[] newLines = new string[lines.Length - 1];
+            int index = Array.IndexOf(lines, remove);
 
+            for (int i = 0; i < newLines.Length; i++)
+            {
+                if (i < index)
+                {
+                    newLines[i] = lines[i];
+                }
+                else if (i >= index)
+                {
+                    newLines[i] = lines[i + 1];
+                }
+            }
+            File.WriteAllLines(path, newLines);
         }
+
         //Add a new word to the list
-        static void AddWord(string path, string[] word)
+        public static void AddWord(string path, string word)
         {
-            File.AppendAllLines(path, word);
+            File.AppendAllLines(path, new string[] { word });
         }
+
         //End the game
-        static void ExitGame()
+        public static void ExitGame()
         {
 
         }
-        static void StartGame()
+
+        public static void StartGame()
         {
-            //Actual game logic of guessing a letter of the mystery word
+            // Show an empty word (_ _ _ _ _ _)
+            // Select a random word
+            // Make 2 arrays
+            // 1 empty
+            // 1 word
+            // Prompt user to enter a letter
+            // Read user input
+            // Create another txt file to keep track of the guessed letter
+            // If the entered letter == to a letter in array
+            // Fill the empty array
+            // Repeat until concat word matches each other
+
+        }
+
+        public static void RandomWord()
+        {
+
         }
     }
 }
