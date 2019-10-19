@@ -42,6 +42,7 @@ namespace SystemIO
                     RemoveWord(path, remove);
                     return true;
                 case "4":
+                    StartGame(path);
                     return true;
                 case "5":
                     ExitGame();
@@ -62,22 +63,22 @@ namespace SystemIO
         //Gives the user the ability to remove one of the words in the list
         public static void RemoveWord(string path, string remove)
         {
-            string[] lines = File.ReadAllLines(path);
-            string[] newLines = new string[lines.Length - 1];
-            int index = Array.IndexOf(lines, remove);
+            string[] words = File.ReadAllLines(path);
+            string[] newWords = new string[words.Length - 1];
+            int index = Array.IndexOf(words, remove);
 
-            for (int i = 0; i < newLines.Length; i++)
+            for (int i = 0; i < newWords.Length; i++)
             {
                 if (i < index)
                 {
-                    newLines[i] = lines[i];
+                    newWords[i] = words[i];
                 }
                 else if (i >= index)
                 {
-                    newLines[i] = lines[i + 1];
+                    newWords[i] = words[i + 1];
                 }
             }
-            File.WriteAllLines(path, newLines);
+            File.WriteAllLines(path, newWords);
         }
 
         //Add a new word to the list
@@ -92,8 +93,9 @@ namespace SystemIO
 
         }
 
-        public static void StartGame()
+        public static void StartGame(string path)
         {
+            Console.WriteLine(RandomWord(path));
             // Show an empty word (_ _ _ _ _ _)
             // Select a random word
             // Make 2 arrays
@@ -108,9 +110,12 @@ namespace SystemIO
 
         }
 
-        public static void RandomWord()
+        public static string RandomWord(string path)
         {
-
+            Random rand = new Random();
+            string[] words = File.ReadAllLines(path);
+            int random = rand.Next(words.Length);
+            return words[random];
         }
     }
 }
