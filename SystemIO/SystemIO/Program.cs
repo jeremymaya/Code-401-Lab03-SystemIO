@@ -8,7 +8,7 @@ namespace SystemIO
         static void Main(string[] args)
         {
             bool status = true;
-            while(status)
+            while (status)
             {
                 status = UserInterface();
             }
@@ -17,6 +17,7 @@ namespace SystemIO
         //Asks the user what action they should take
         public static bool UserInterface()
         {
+            Console.Clear();
             Console.WriteLine("1. View All words in the list");
             Console.WriteLine("2. Add a word");
             Console.WriteLine("3. Remove a word");
@@ -25,7 +26,7 @@ namespace SystemIO
             Console.Write("Choose an option: ");
 
             string path = "../../../words.txt";
-            
+
             switch (Console.ReadLine())
             {
                 case "1":
@@ -43,6 +44,18 @@ namespace SystemIO
                     return true;
                 case "4":
                     StartGame(path);
+                    Console.WriteLine("");
+                    Console.WriteLine("You win!");
+                    Console.WriteLine("");
+                    Console.WriteLine("1. Play again");
+                    Console.WriteLine("2. Exit");
+                    Console.Write("Choose an option: ");
+                    string answer = Console.ReadLine();
+
+                    if (answer == "1")
+                    {
+                        StartGame(path);
+                    }
                     return true;
                 case "5":
                     ExitGame();
@@ -95,27 +108,82 @@ namespace SystemIO
 
         public static void StartGame(string path)
         {
-            Console.WriteLine(RandomWord(path));
-            // Show an empty word (_ _ _ _ _ _)
-            // Select a random word
-            // Make 2 arrays
-            // 1 empty
-            // 1 word
-            // Prompt user to enter a letter
-            // Read user input
-            // Create another txt file to keep track of the guessed letter
-            // If the entered letter == to a letter in array
-            // Fill the empty array
-            // Repeat until concat word matches each other
+            string pathGuess = "../../../guess.txt";
+            string pathMatch = "../../../match.txt";
 
+            File.Delete(pathGuess);
+            File.Delete(pathMatch);
+
+            string randomWord = SelectRandomWord(path);
+            string[] currentGuess = new string[randomWord.Length];
+            Console.WriteLine("" + string.Join("_ ", currentGuess) + "");
+            Console.WriteLine("");
+
+            bool wrong = true;
+
+            while (wrong)
+            {
+                wrong = Game(pathGuess, pathMatch, randomWord, currentGuess);
+            }
         }
 
-        public static string RandomWord(string path)
+        public static string SelectRandomWord(string path)
         {
             Random rand = new Random();
             string[] words = File.ReadAllLines(path);
             int random = rand.Next(words.Length);
-            return words[random];
+            string randomWord = words[random];
+            return randomWord;
         }
+
+        public static bool Game(string pathGuess, string pathMatch, string randomWord, string[] currentGuess)
+        {
+            Console.WriteLine("Guess a letter");
+            string guess = Console.ReadLine();
+            CheckLetter(pathGuess, pathMatch, randomWord, guess);
+            currentGuess = DisplayLetters(pathMatch, currentGuess, randomWord);
+            Console.WriteLine(string.Join(" ", currentGuess));
+            Console.WriteLine("");
+
+            if (randomWord == string.Join("", currentGuess))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public static void CheckLetter(string pathGuess, string pathMatch, string randomWord, string guess)
+        {
+            File.AppendAllLines(pathGuess, new string[] { guess });
+            if (randomWord.Contains(guess))
+            {
+                File.AppendAllLines(pathMatch, new string[] { guess });
+            }
+        }
+
+        public static string[] DisplayLetters(string pathMatch, string[] currentGuess, string randomWord)
+        {
+            string[] matchingLetters = File.ReadAllLines(pathMatch);
+
+            foreach (string letter in matchingLetters)
+            {
+                for (int i = 0; i < randomWord.Length; i++)
+                {
+                    if (randomWord[i] == letter[0])
+                    {
+                        currentGuess[i] = letter;
+                    }
+                    else if (currentGuess[i] == null || currentGuess[i] == "_")
+                    {
+                        currentGuess[i] = "_";
+                    }
+                }
+            }
+            return currentGuess;
+        }
+
     }
 }
