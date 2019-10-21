@@ -20,6 +20,9 @@ Each time a new game session starts, the mystery word chosen should come from th
 
 ---
 
+### Domain Modeling
+![Image 1](https://github.com/jeremymaya/Code-401-Lab03-SystemIO/blob/master/Screenshots/Domain.JPG)
+
 ### Getting Started
 Clone this repository to your local machine.
 
