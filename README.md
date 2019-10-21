@@ -13,10 +13,10 @@ This is a “Word Guess Game” console app. The main idea of the game is she must g
 
 Each time a new game session starts, the mystery word chosen should come from the external text file that holds a list of all the possible words. The program should randomly select one of the words in this file as the new mystery word for the next game round. This bank of words should be editable by your client so that she may view, add, and delete words as she wishes. She expects the game to have a simple interface that allows her to navigate across the game. Some actions that she wants availabe within her interface are:
 
-View All words in the list
-1. Add a word
-2. Remove a word
-3. Play Game
+1. View All words in the list
+2. Add a word
+3. Remove a word
+4. Play Game
 
 ---
 
