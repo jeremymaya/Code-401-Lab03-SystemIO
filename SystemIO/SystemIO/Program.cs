@@ -14,7 +14,10 @@ namespace SystemIO
             }
         }
 
-        //Asks the user what action they should take
+        /// <summary>
+        /// UserInterface asking the user what action they should be taken
+        /// </summary>
+        /// <returns>boolean</returns>
         public static bool UserInterface()
         {
             Console.Clear();
@@ -25,13 +28,13 @@ namespace SystemIO
             Console.WriteLine("5. Exit");
             Console.Write("Choose an option: ");
 
-            string path = "../../../words.txt";
+            string pathWord = "../../../words.txt";
 
             switch (Console.ReadLine())
             {
                 case "1":
                     Console.Clear();
-                    Console.WriteLine(ViewWords(path));
+                    Console.WriteLine(ViewWords(pathWord));
                     Console.WriteLine("Press 'Enter' to go back to the main menu");
                     Console.ReadLine();
                     return true;
@@ -39,19 +42,19 @@ namespace SystemIO
                     Console.Clear();
                     Console.WriteLine("Type a word to add to the list");
                     string word = Console.ReadLine();
-                    AddWord(path, word);
+                    AddWord(pathWord, word);
                     return true;
                 case "3":
                     Console.Clear();
                     Console.WriteLine("Type a word to remove from the list");
                     string remove = Console.ReadLine();
-                    RemoveWord(path, remove);
+                    RemoveWord(pathWord, remove);
                     return true;
                 case "4":
                     bool play = true;
                     while (play)
                     {
-                        StartGame(path);
+                        StartGame(pathWord);
                         play = PlayAgain();
                     }
                     return true;
@@ -63,17 +66,26 @@ namespace SystemIO
             }
 
         }
-        //Reads the words in from the external file and outputs them to the console
-        public static string ViewWords(string path)
+
+        /// <summary>
+        /// ViewWords reads the words in from the external file and outputs them to the console
+        /// </summary>
+        /// <param name="pathWord">path to the words.txt</param>
+        /// <returns></returns>
+        public static string ViewWords(string pathWord)
         {
-            string allWords = File.ReadAllText(path);
+            string allWords = File.ReadAllText(pathWord);
             return allWords;
         }
 
-        //Gives the user the ability to remove one of the words in the list
-        public static void RemoveWord(string path, string remove)
+        /// <summary>
+        /// RemoveWord remove user typed word from the words.txt
+        /// </summary>
+        /// <param name="pathWord">path to the words.txt</param>
+        /// <param name="remove">word to remove</param>
+        public static void RemoveWord(string pathWord, string remove)
         {
-            string[] words = File.ReadAllLines(path);
+            string[] words = File.ReadAllLines(pathWord);
             string[] newWords = new string[words.Length - 1];
             int index = Array.IndexOf(words, remove);
 
@@ -88,25 +100,31 @@ namespace SystemIO
                     newWords[i] = words[i + 1];
                 }
             }
-            File.WriteAllLines(path, newWords);
+            File.WriteAllLines(pathWord, newWords);
         }
 
-        //Add a new word to the list
-        public static void AddWord(string path, string word)
+        /// <summary>
+        /// AddWord adds user typed word to the words.txt
+        /// </summary>
+        /// <param name="pathWord">path to the words.txt</param>
+        /// <param name="word">word to add</param>
+        public static void AddWord(string pathWord, string word)
         {
-            File.AppendAllLines(path, new string[] { word });
+            File.AppendAllLines(pathWord, new string[] { word });
         }
 
-        public static void StartGame(string path)
+        /// <summary>
+        /// StartGame method setup a game to be played and invokes Game method
+        /// </summary>
+        /// <param name="pathWord">path to the words.txt</param>
+        public static void StartGame(string pathWord)
         {
             Console.Clear();
             string pathGuess = "../../../guess.txt";
-            string pathMatch = "../../../match.txt";
 
             File.Delete(pathGuess);
-            File.Delete(pathMatch);
 
-            string randomWord = SelectRandomWord(path);
+            string randomWord = SelectRandomWord(pathWord);
             string[] currentGuess = new string[randomWord.Length];
 
             for (int i = 0; i < currentGuess.Length; i++)
@@ -123,7 +141,7 @@ namespace SystemIO
             {
                 try
                 {
-                    wrong = Game(pathGuess, pathMatch, randomWord, currentGuess);
+                    wrong = Game(pathGuess, randomWord, currentGuess);
                 }
                 catch(Exception e)
                 {
@@ -133,53 +151,70 @@ namespace SystemIO
             }
         }
 
-        public static string SelectRandomWord(string path)
+        /// <summary>
+        /// SelectRandomWord method selects a random word from the wrods.txt
+        /// </summary>
+        /// <param name="pathWord">path to the words.txt</param>
+        /// <returns></returns>
+        public static string SelectRandomWord(string pathWord)
         {
             Random rand = new Random();
-            string[] words = File.ReadAllLines(path);
+            string[] words = File.ReadAllLines(pathWord);
             int random = rand.Next(words.Length);
             string randomWord = words[random];
             return randomWord;
         }
 
-        public static bool Game(string pathGuess, string pathMatch, string randomWord, string[] currentGuess)
+        /// <summary>
+        /// Game method asks for user guess then invokes RenderLetters method to print out letters
+        /// </summary>
+        /// <param name="pathGuess">path to the guess.txt</param>
+        /// <param name="randomWord">selected random word from the words.txt</param>
+        /// <param name="currentGuess">currently guessed letters</param>
+        /// <returns></returns>
+        public static bool Game(string pathGuess, string randomWord, string[] currentGuess)
         {
             Console.Write("Guess a letter: ");
             string guess = Console.ReadLine();
-            File.AppendAllLines(pathMatch, new string[] { guess });
-            string[] matchingLetters = File.ReadAllLines(pathMatch);
-
-            currentGuess = RenderLetters(pathMatch, currentGuess, randomWord, matchingLetters);
-            Console.WriteLine(string.Join(" ", currentGuess));
-            Console.WriteLine("");
-
-            if (randomWord.ToLower() == string.Join("", currentGuess))
+            if (guess.Length > 1)
             {
-                return false;
+                Console.WriteLine("Invalid Entry - Please enter a single letter");
+                Console.WriteLine("");
             }
             else
             {
-                return true;
+                File.AppendAllLines(pathGuess, new string[] { guess });
+                string[] gueesedLetters = File.ReadAllLines(pathGuess);
 
+                currentGuess = RenderLetters(currentGuess, randomWord, gueesedLetters);
+                Console.WriteLine(string.Join(" ", currentGuess));
+                Console.WriteLine("");
+
+                if (randomWord.ToLower() == string.Join("", currentGuess))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+
+                }
             }
+            return true;
         }
 
-            //if ((randomWord.Contains(guess, StringComparison.CurrentCultureIgnoreCase)))
-            //{
-
-            //}
-            //else
-            //{
-            //    File.AppendAllLines(pathMatch, new string[] { guess.ToLower() });
-            //}
-
-
-        public static string[] RenderLetters(string pathMatch, string[] currentGuess, string randomWord, string[] matchingLetters)
+        /// <summary>
+        /// RenderLetters checks if there is a matching letter and updates currentGuess
+        /// </summary>
+        /// <param name="currentGuess">currently guessed letters</param>
+        /// <param name="randomWord">selected random word from the words.txt</param>
+        /// <param name="matchingLetters"></param>
+        /// <returns></returns>
+        public static string[] RenderLetters(string[] currentGuess, string randomWord, string[] gueesedLetters)
         {
-
             string standarizedWord = randomWord.ToLower();
 
-            foreach (string letter in matchingLetters)
+            foreach (string letter in gueesedLetters)
             {
                 for (int i = 0; i < randomWord.Length; i++)
                 {
@@ -196,6 +231,10 @@ namespace SystemIO
             return currentGuess;
         }
 
+        /// <summary>
+        /// PlayAgain method asks the user to play/exit the game
+        /// </summary>
+        /// <returns>boolean</returns>
         public static bool PlayAgain()
         {
             Console.WriteLine("You win!");
@@ -214,6 +253,5 @@ namespace SystemIO
                     return false;
             }
         }
-
     }
 }
