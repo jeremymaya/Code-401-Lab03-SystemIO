@@ -54,7 +54,7 @@ Then select and open ```SystemIO.sln```
 #### Using the Application - Game Start
 ![Image 1](https://github.com/jeremymaya/Code-401-Lab03-SystemIO/blob/master/Screenshots/Game.JPG)
 #### Using the Application - Game/End
-![Image 1](https://github.com/jeremymaya/Code-401-Lab03-SystemIO/blob/master/Screenshots/Won.JPG)
+![Image 1](https://github.com/jeremymaya/Code-401-Lab03-SystemIO/blob/master/Screenshots/Win.JPG)
 
 ---
 
