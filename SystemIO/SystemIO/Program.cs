@@ -56,7 +56,6 @@ namespace SystemIO
                     }
                     return true;
                 case "5":
-                    ExitGame();
                     return false;
                 default:
                     Console.WriteLine("Invalid entry");
@@ -98,12 +97,6 @@ namespace SystemIO
             File.AppendAllLines(path, new string[] { word });
         }
 
-        //End the game
-        public static void ExitGame()
-        {
-
-        }
-
         public static void StartGame(string path)
         {
             Console.Clear();
@@ -115,15 +108,28 @@ namespace SystemIO
 
             string randomWord = SelectRandomWord(path);
             string[] currentGuess = new string[randomWord.Length];
+
+            for (int i = 0; i < currentGuess.Length; i++)
+            {
+                currentGuess[i] = "_";
+            }
+
             Console.WriteLine("");
-            Console.WriteLine("_ " + string.Join("_ ", currentGuess) + "");
+            Console.WriteLine("" + string.Join(" ", currentGuess) + "");
             Console.WriteLine("");
 
             bool wrong = true;
-
             while (wrong)
             {
-                wrong = Game(pathGuess, pathMatch, randomWord, currentGuess);
+                try
+                {
+                    wrong = Game(pathGuess, pathMatch, randomWord, currentGuess);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine("");
+                    Console.WriteLine(e.Message);
+                }
             }
         }
 
@@ -140,9 +146,10 @@ namespace SystemIO
         {
             Console.Write("Guess a letter: ");
             string guess = Console.ReadLine();
+            File.AppendAllLines(pathMatch, new string[] { guess });
+            string[] matchingLetters = File.ReadAllLines(pathMatch);
 
-            CheckLetter(pathGuess, pathMatch, randomWord, guess);
-            currentGuess = RenderLetters(pathMatch, currentGuess, randomWord);
+            currentGuess = RenderLetters(pathMatch, currentGuess, randomWord, matchingLetters);
             Console.WriteLine(string.Join(" ", currentGuess));
             Console.WriteLine("");
 
@@ -153,22 +160,23 @@ namespace SystemIO
             else
             {
                 return true;
-            }
-        }
-        // https://stackoverflow.com/questions/444798/case-insensitive-containsstring
-        public static void CheckLetter(string pathGuess, string pathMatch, string randomWord, string guess)
-        {
-            File.AppendAllLines(pathGuess, new string[] { guess });
-            
-            if ((randomWord.Contains(guess, StringComparison.CurrentCultureIgnoreCase)))
-            {
-                File.AppendAllLines(pathMatch, new string[] { guess.ToLower() });
+
             }
         }
 
-        public static string[] RenderLetters(string pathMatch, string[] currentGuess, string randomWord)
+            //if ((randomWord.Contains(guess, StringComparison.CurrentCultureIgnoreCase)))
+            //{
+
+            //}
+            //else
+            //{
+            //    File.AppendAllLines(pathMatch, new string[] { guess.ToLower() });
+            //}
+
+
+        public static string[] RenderLetters(string pathMatch, string[] currentGuess, string randomWord, string[] matchingLetters)
         {
-            string[] matchingLetters = File.ReadAllLines(pathMatch);
+
             string standarizedWord = randomWord.ToLower();
 
             foreach (string letter in matchingLetters)
@@ -187,6 +195,7 @@ namespace SystemIO
             }
             return currentGuess;
         }
+
         public static bool PlayAgain()
         {
             Console.WriteLine("You win!");
